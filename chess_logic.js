@@ -312,7 +312,7 @@ function getQueenMoves(field, allegiance) {
 }
 
 function getKingMoves(field, allegiance){
-    var queenMoveList = getQueenMoves(field, allegiance + '-king')
+    var queenMoveList = getQueenMoves(field)
 
     var moveList = new Object()
 
@@ -323,6 +323,11 @@ function getKingMoves(field, allegiance){
    return moveList
 }
    
+function getUltimateMoves(field, allegiance) {
+    var moveList = Object.assign({},getQueenMoves(field),getKnightMoves(field))
+    return moveList
+}
+
 class Piece{
     pieceType
     #allegiance
@@ -373,6 +378,9 @@ class Piece{
 
             case 'king':
                 return getKingMoves(this.#field, this.#allegiance)
+            
+            case 'ultimate':
+                return getUltimateMoves(this.#field, this.#allegiance)
         }
     }
 }
@@ -458,7 +466,6 @@ function turnAnalysisOn(event){
     var toggle = event.target
     if(!toggle.checked) {return}
     var targetAnalyzer = toggle.parentElement.parentElement.parentElement
-
     var allegianceSelection = targetAnalyzer.getElementsByClassName('allegiance-selector')[0].getElementsByTagName("input")
     var selectedAllegiance = getSelectedItem(allegianceSelection).value
     
