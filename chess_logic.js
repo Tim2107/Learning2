@@ -55,8 +55,28 @@ function markFields(piece){
         style.push('black')
         style.push('level1')
     }
+
     displayAnalysis(fieldsToMark, style)   
 }
+
+function unmarkFields(piece){
+    var fieldsToUnmark = getMoveStructur(piece)
+    if(!fieldsToUnmark.length) {return}
+    var style = []
+
+    if(piece.getAllegiance() == 'white') {
+        style.push('white')
+        style.push('level1')
+    }
+
+    if(piece.getAllegiance() == 'black') {
+        style.push('black')
+        style.push('level1')
+    }
+    
+    hideAnalysis(fieldsToUnmark, style)   
+}
+
 
 function displayAnalysis(fieldsToHighlight, style) {
     for (const field of fieldsToHighlight) {
@@ -67,9 +87,24 @@ function displayAnalysis(fieldsToHighlight, style) {
     }
 }
 
+function hideAnalysis(fieldsToHighlight, style) {
+    for (const field of fieldsToHighlight) {
+        var coordinates = field.split("")
+        var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
+        var targetField = document.querySelectorAll(targetFieldClasses)[0]
+        removeStyle(targetField, style)
+    }
+}
+
 function addStyle(targetField, style) {
     for (const classNames of style) {
         targetField.classList.add(classNames)
+    }
+}
+
+function removeStyle(targetField, style) {
+    for (const classNames of style) {
+        targetField.classList.remove(classNames)
     }
 }
 
@@ -431,7 +466,7 @@ const analysisSettingsItem = `
     var analysisToggle = settingsItem.getElementsByClassName('analysis-toggle')[0]
     var removeButton = settingsItem.getElementsByClassName('btn-remove')[0]
     
-    analysisToggle.addEventListener('click', turnAnalysisOn)
+    analysisToggle.addEventListener('click', toggleAnalysis)
     removeButton.addEventListener('click', removeAnalysisItem)
     globalSettingsCounter++
 }
@@ -462,23 +497,41 @@ function promptForValidInput() {
     return prompt(infoMessage,'')    
 }
 
-function turnAnalysisOn(event){
+function toggleAnalysis(event){
     var toggle = event.target
-    if(!toggle.checked) {return}
     var targetAnalyzer = toggle.parentElement.parentElement.parentElement
     var allegianceSelection = targetAnalyzer.getElementsByClassName('allegiance-selector')[0].getElementsByTagName("input")
     var selectedAllegiance = getSelectedItem(allegianceSelection).value
-    
-    
     var typeSelection = targetAnalyzer.getElementsByClassName('analysis-type-selector')[0].getElementsByTagName("input")
     var selectedType = getSelectedItem(typeSelection).value
-
     var selectedPiece = selectedAllegiance + "-" + selectedType
     var analysisControls = toggle.parentElement.parentElement
-    var fieldInput = analysisControls.getElementsByClassName('field-input')[0]
-    fieldInput.value = checkInput(fieldInput.value)
-    var piece = new Piece(selectedPiece, fieldInput.value)
-    markFields(piece)
+    var fieldInputIterable = analysisControls.getElementsByClassName('field-input')
+    var fieldInput = fieldInputIterable[0]
+    if(toggle.checked) {
+        fieldInput.value = checkInput(fieldInput.value)
+        var piece = new Piece(selectedPiece, fieldInput.value)
+        markFields(piece)
+        lockSelection(allegianceSelection)
+        lockSelection(typeSelection)  
+        lockSelection(fieldInputIterable)
+    } else {
+        var piece = new Piece(selectedPiece, fieldInput.value)
+        unmarkFields(piece)
+        unlockSelection(allegianceSelection)
+        unlockSelection(typeSelection)
+        unlockSelection(fieldInputIterable)
+    }
+}
+
+function lockSelection(selection) {
+    for (const item of selection) {
+        item.disabled = true    }
+}
+
+function unlockSelection(selection) {
+    for (const item of selection) {
+        item.disabled = false    }
 }
 
 function getSelectedItem(selection){
@@ -490,8 +543,9 @@ function getSelectedItem(selection){
 
 function removeAnalysisItem(event) {
     var buttonClicked = event.target
+    var analysisToggle = buttonClicked.parentElement.getElementsByClassName("analysis-toggle")[0]
+    if(analysisToggle.checked) {analysisToggle.click()}
     var targetAnalyzer = buttonClicked.parentElement.parentElement
-    // turnOfAnalysis(targetAnalyzer)
     targetAnalyzer.remove()
 }
 
