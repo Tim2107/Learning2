@@ -30,7 +30,8 @@ for (let i = 1; i <= 8; i++) {
 
 async function testDisplay() {
     for (const index in allFields) {
-        markFields(allFields[index])
+        var piece = new Piece(getSelectedPieceTypes()[0], allFields[index])
+        markFields(piece)
         await delay(waitTimeInMilliseconds)
         resetFields()
     }
@@ -40,8 +41,7 @@ function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
   
-function markFields(field){
-    var piece = new Piece(getSelectedPieceTypes()[0], field)
+function markFields(piece){
     var fieldsToMark = getMoveStructur(piece)
     if(!fieldsToMark.length) {return}
     var style = []
@@ -390,25 +390,25 @@ const analysisSettingsItem = `
     <label for="black${globalSettingsCounter}" class="allegiance-selector-item">BLACK</label>
 </div>
 <div class="analysis-type-selector settings-item">
-    <input type="radio" id="pawn" name="analysis-type" value="pawn" checked>
-    <label for="pawn" class="type-selector-item">PAWN</label>
-    <input type="radio" id="bishop" name="analysis-type" value="bishop">
-    <label for="bishop" class="type-selector-item">BISHOP</label>                    
-    <input type="radio" id="knight" name="analysis-type" value="knight">
-    <label for="knight" class="type-selector-item">KNIGHT</label>
-    <input type="radio" id="rook" name="analysis-type" value="rook">
-    <label for="rook" class="type-selector-item">ROOK</label>
-    <input type="radio" id="queen" name="analysis-type" value="queen">
-    <label for="queen" class="type-selector-item">QUEEN</label>
-    <input type="radio" id="king" name="analysis-type" value="king">
-    <label for="king" class="type-selector-item">KING</label>
-    <input type="radio" id="knight-path" name="analysis-type" value="knight-path">
-    <label for="knight-path" class="type-selector-item">KNIGHT PATH</label>
-    <input type="radio" id="ultimate" name="analysis-type" value="ultimate">
-    <label for="ultimate" class="type-selector-item">ULTIMATE</label>
+<input type="radio" id="pawn${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="pawn" checked>
+<label for="pawn${globalSettingsCounter}" class="type-selector-item">PAWN</label>
+<input type="radio" id="bishop${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="bishop">
+<label for="bishop${globalSettingsCounter}" class="type-selector-item">BISHOP</label>                    
+<input type="radio" id="knight${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight">
+<label for="knight${globalSettingsCounter}" class="type-selector-item">KNIGHT</label>
+<input type="radio" id="rook${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="rook">
+<label for="rook${globalSettingsCounter}" class="type-selector-item">ROOK</label>
+<input type="radio" id="queen${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="queen">
+<label for="queen${globalSettingsCounter}" class="type-selector-item">QUEEN</label>
+<input type="radio" id="king${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="king">
+<label for="king${globalSettingsCounter}" class="type-selector-item">KING</label>
+<input type="radio" id="knight-path${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight-path">
+<label for="knight-path${globalSettingsCounter}" class="type-selector-item">KNIGHT PATH</label>
+<input type="radio" id="ultimate${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="ultimate">
+<label for="ultimate${globalSettingsCounter}" class="type-selector-item">ULTIMATE</label>
 </div>
 <div class="analysis-controls settings-item">
-    <input type="text" class="field-input analysis-controls-item" pattern="[A-H]+[1-8]" title="Please enter a valid chessboard field!">
+    <input type="text" class="field-input analysis-controls-item" pattern="[A-H]+[1-8]" title="Please enter a valid chessboard field!" value="A1">
     <label class="switch analysis-controls-item">
         <input type="checkbox" class="analysis-toggle">
         <span class="slider round"></span>
@@ -425,6 +425,7 @@ const analysisSettingsItem = `
     
     analysisToggle.addEventListener('click', turnAnalysisOn)
     removeButton.addEventListener('click', removeAnalysisItem)
+    globalSettingsCounter++
 }
 
 function checkInput(input) {
@@ -456,12 +457,29 @@ function promptForValidInput() {
 function turnAnalysisOn(event){
     var toggle = event.target
     if(!toggle.checked) {return}
-    var targetAnalyzer = toggle.parentElement.parentElement
-    var fieldInput = targetAnalyzer.getElementsByClassName('field-input')[0]
+    var targetAnalyzer = toggle.parentElement.parentElement.parentElement
+
+    var allegianceSelection = targetAnalyzer.getElementsByClassName('allegiance-selector')[0].getElementsByTagName("input")
+    var selectedAllegiance = getSelectedItem(allegianceSelection).value
+    
+    
+    var typeSelection = targetAnalyzer.getElementsByClassName('analysis-type-selector')[0].getElementsByTagName("input")
+    var selectedType = getSelectedItem(typeSelection).value
+
+    var selectedPiece = selectedAllegiance + "-" + selectedType
+    var analysisControls = toggle.parentElement.parentElement
+    var fieldInput = analysisControls.getElementsByClassName('field-input')[0]
     fieldInput.value = checkInput(fieldInput.value)
-    markFields(fieldInput.value)
+    var piece = new Piece(selectedPiece, fieldInput.value)
+    markFields(piece)
 }
 
+function getSelectedItem(selection){
+    for (const item of selection) {
+        if(item.checked)
+        return item
+    }
+}
 
 function removeAnalysisItem(event) {
     var buttonClicked = event.target
