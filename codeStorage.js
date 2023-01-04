@@ -234,3 +234,27 @@ function getBishopMoves1(field, allegiance) {
     }
     return moveList
 }
+
+function getRookMoves1(field, allegiance) {
+   
+    var positions = convertFieldIntoPositionNumbers(field)
+    var directions = [positions[1] - 1, positions[1] + 1, positions[0] - 1, positions[0] + 1]
+    var moveList = new Object()
+
+    for (const direction in directions) {
+        var directionLabel = 'rook-direction-' + direction
+        var moves = []
+        var x = 1
+        if(direction%2 == 0) {x = -1}
+      
+        for(let i = directions[direction];  isOnBoard(i); i=i+x){      
+            if(direction < 2){
+                moves.push(convertNumberPositionsIntoField(positions[0], i))
+            } else {
+                moves.push(convertNumberPositionsIntoField(i, positions[1]))
+            }
+            moveList[directionLabel] = moves
+        }
+    }
+    return moveList
+}

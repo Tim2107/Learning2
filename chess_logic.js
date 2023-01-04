@@ -364,24 +364,37 @@ function getKnightMoves(field, allegiance) {
     return moveList
 }
 
+function rookColumnInstructions(n) {
+        if (n < 2) {
+          return 0;
+        } else {
+          return Math.pow(-1,n);
+        }
+}
+
+function rookRowInstructions(n) {
+    if (n > 1) {
+      return 0;
+    } else {
+      return Math.pow(-1,n);
+    }
+}
+
 function getRookMoves(field, allegiance) {
    
     var positions = convertFieldIntoPositionNumbers(field)
-    var directions = [positions[1] - 1, positions[1] + 1, positions[0] - 1, positions[0] + 1]
     var moveList = new Object()
-
-    for (const direction in directions) {
-        var directionLabel = 'rook-direction-' + direction
+    for (z = 0; z < 4; z++){
+        var directionLabel = 'rook-direction-' + z
         var moves = []
-        var x = 1
-        if(direction%2 == 0) {x = -1}
-      
-        for(let i = directions[direction];  isOnBoard(i); i=i+x){      
-            if(direction < 2){
-                moves.push(convertNumberPositionsIntoField(positions[0], i))
-            } else {
-                moves.push(convertNumberPositionsIntoField(i, positions[1]))
-            }
+        
+        var x = rookColumnInstructions(z)
+        var y = rookRowInstructions(z)
+        
+        for(let i = positions[0] + x, j = positions[1] + y;
+            isOnBoard(i,j);
+            i += x, j += y){      
+            moves.push(convertNumberPositionsIntoField(i, j))
             moveList[directionLabel] = moves
         }
     }
