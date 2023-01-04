@@ -290,41 +290,26 @@ function getBishopMoves(field, allegiance) {
     var positions = convertFieldIntoPositionNumbers(field)
     var moveList = new Object()
 
-    var northEastMoves = []
-    var southEastMoves = []
-    var southWestMoves = []
-    var northWestMoves = []
-
-    for(let i = positions[0]+1, j = positions[1]+1;
-        isOnBoard(i,j);
-        i++, j++){      
-        northEastMoves.push(convertNumberPositionsIntoField(i, j))
-        moveList.northEast = northEastMoves
+    for (z = 0; z < 4; z++){
+        
+        var directionLabel = 'bishop-direction-' + z
+        var moves = []
+        
+        var x = 1
+        var y = 1
+        if(1 < z) {x = -1}
+        if(z%2==0) {y = -1} 
+        
+        for(let i = positions[0] + x, j = positions[1] + y;
+            isOnBoard(i,j);
+            i += x, j += y){      
+            moves.push(convertNumberPositionsIntoField(i, j))
+            moveList[directionLabel] = moves
+        }
     }
-
-    for(let i = positions[0]+1, j = positions[1]-1;
-        isOnBoard(i,j);
-        i++, j--){      
-        southEastMoves.push(convertNumberPositionsIntoField(i, j))
-        moveList.southEast = southEastMoves
-    }
-
-    for(let i = positions[0]-1, j = positions[1]-1;
-        isOnBoard(i,j);
-        i--, j--){      
-        southWestMoves.push(convertNumberPositionsIntoField(i, j))
-        moveList.southWest = southWestMoves
-    }
-
-    for(let i = positions[0]-1, j = positions[1]+1;
-        isOnBoard(i,j);
-        i--, j++){      
-        northWestMoves.push(convertNumberPositionsIntoField(i, j))
-        moveList.northWest = northWestMoves
-    }
-
     return moveList
 }
+
 
 function getKnightMoves(field, allegiance) {
 
@@ -382,36 +367,27 @@ function getKnightMoves(field, allegiance) {
 function getRookMoves(field, allegiance) {
    
     var positions = convertFieldIntoPositionNumbers(field)
+    var directions = [positions[1] - 1, positions[1] + 1, positions[0] - 1, positions[0] + 1]
     var moveList = new Object()
 
-    var northMoves = []
-    var eastMoves = []
-    var southMoves = []
-    var westMoves = []
-
-    for(let i = positions[1] + 1;  isOnBoard(i); i++){      
-        northMoves.push(convertNumberPositionsIntoField(positions[0], i))
-        moveList.north = northMoves
+    for (const direction in directions) {
+        var directionLabel = 'rook-direction-' + direction
+        var moves = []
+        var x = 1
+        if(direction%2 == 0) {x = -1}
+      
+        for(let i = directions[direction];  isOnBoard(i); i=i+x){      
+            if(direction < 2){
+                moves.push(convertNumberPositionsIntoField(positions[0], i))
+            } else {
+                moves.push(convertNumberPositionsIntoField(i, positions[1]))
+            }
+            moveList[directionLabel] = moves
+        }
     }
-
-    for(let i = positions[1] - 1;  isOnBoard(i); i--){      
-        southMoves.push(convertNumberPositionsIntoField(positions[0], i))
-        moveList.south = southMoves
-    }
-
-    for(let i = positions[0] - 1;  isOnBoard(i); i--){      
-        westMoves.push(convertNumberPositionsIntoField(i, positions[1]))
-        moveList.west = westMoves
-    }
-
-    for(let i = positions[0] + 1;  isOnBoard(i); i++){      
-        eastMoves.push(convertNumberPositionsIntoField(i, positions[1]))
-        moveList.east = eastMoves
-    }
-    
     return moveList
 }
-        
+          
 function getQueenMoves(field, allegiance) {
     var moveList = Object.assign({},getRookMoves(field),getBishopMoves(field))
     return moveList
@@ -451,6 +427,8 @@ function addAnalysisSettingsItem(){
     settingsItem.classList.add('analysis-settings-container')
     var analysisSettings = document.getElementsByClassName('analysis-settings')[0]
 
+
+
 const analysisSettingsItem = `
 <div class="allegiance-selector settings-item">
     <input type="radio" id="white${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="white" checked>
@@ -473,7 +451,7 @@ ${generateHTMLTypeSelection(PIECETYPE)}
     settingsItem.innerHTML=analysisSettingsItem
     analysisSettings.append(settingsItem)
     
-    var fieldInput = settingsItem.getElementsByClassName('field-input')[0]
+    var fieldInputIterable = settingsItem.getElementsByClassName('field-input')
     var analysisToggle = settingsItem.getElementsByClassName('analysis-toggle')[0]
     var removeButton = settingsItem.getElementsByClassName('btn-remove')[0]
     

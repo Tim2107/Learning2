@@ -141,3 +141,96 @@ function markLanes() {
 <label for="ultimate${globalSettingsCounter}" class="type-selector-item">ULTIMATE</label>
 
 */
+
+function generateHTMLTypeSelection(collection, htmlString) {
+    let htmlSelection = '';
+    this.collection = collection
+    console.log(collection)
+    console.log(htmlString)
+    for (let i = 0; i < collection.length; i++) {
+        iterator = i       
+        if(i != 0) {addCheckedToFirstItem = ''}
+        
+        htmlSelection += htmlString
+    }
+    return htmlSelection
+}
+
+var typeSelectionHTML =
+`<input type="radio" id="${collection[iterator]}${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="${collection[iterator]}" ${addCheckedToFirstItem} ">
+ <label for="${collection[iterator]}${globalSettingsCounter}" class="type-selector-item">${collection[iterator].toUpperCase()}</label>`
+
+ ${generateHTMLTypeSelection(PIECETYPE, typeSelectionHTML)}
+
+ function getRookMoves1(field, allegiance) {
+   
+    var positions = convertFieldIntoPositionNumbers(field)
+    var moveList = new Object()
+
+    var northMoves = []
+    var eastMoves = []
+    var southMoves = []
+    var westMoves = []
+
+    for(let i = positions[1] + 1;  isOnBoard(i); i++){      
+        northMoves.push(convertNumberPositionsIntoField(positions[0], i))
+        moveList.north = northMoves
+    }
+
+    for(let i = positions[1] - 1;  isOnBoard(i); i--){      
+        southMoves.push(convertNumberPositionsIntoField(positions[0], i))
+        moveList.south = southMoves
+    }
+
+    for(let i = positions[0] - 1;  isOnBoard(i); i--){      
+        westMoves.push(convertNumberPositionsIntoField(i, positions[1]))
+        moveList.west = westMoves
+    }
+
+    for(let i = positions[0] + 1;  isOnBoard(i); i++){      
+        eastMoves.push(convertNumberPositionsIntoField(i, positions[1]))
+        moveList.east = eastMoves
+    }
+    
+    return moveList
+}
+
+function getBishopMoves1(field, allegiance) {
+   
+    var positions = convertFieldIntoPositionNumbers(field)
+    var moveList = new Object()
+
+    var northEastMoves = []
+    var southEastMoves = []
+    var southWestMoves = []
+    var northWestMoves = []
+
+    for(let i = positions[0]+1, j = positions[1]+1;
+        isOnBoard(i,j);
+        i++, j++){      
+        northEastMoves.push(convertNumberPositionsIntoField(i, j))
+        moveList.northEast = northEastMoves
+    }
+
+    for(let i = positions[0]+1, j = positions[1]-1;
+        isOnBoard(i,j);
+        i++, j--){      
+        southEastMoves.push(convertNumberPositionsIntoField(i, j))
+        moveList.southEast = southEastMoves
+    }
+
+    for(let i = positions[0]-1, j = positions[1]+1;
+        isOnBoard(i,j);
+        i--, j++){      
+        northWestMoves.push(convertNumberPositionsIntoField(i, j))
+        moveList.northWest = northWestMoves
+    }
+
+    for(let i = positions[0]-1, j = positions[1]-1;
+        isOnBoard(i,j);
+        i--, j--){      
+        southWestMoves.push(convertNumberPositionsIntoField(i, j))
+        moveList.southWest = southWestMoves
+    }
+    return moveList
+}
