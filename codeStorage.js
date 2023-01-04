@@ -258,3 +258,49 @@ function getRookMoves1(field, allegiance) {
     }
     return moveList
 }
+
+function getRookMoves1(field, allegiance) {
+   
+    var positions = convertFieldIntoPositionNumbers(field)
+    var moveList = new Object()
+    for (z = 0; z < 4; z++){
+        var directionLabel = 'rook-direction-' + z
+        var moves = []
+        
+        var x = rookColumnInstructions(z)
+        var y = rookRowInstructions(z)
+        
+        for(let i = positions[0] + x, j = positions[1] + y;
+            isOnBoard(i,j);
+            i += x, j += y){      
+            moves.push(convertNumberPositionsIntoField(i, j))
+            moveList[directionLabel] = moves
+        }
+    }
+    return moveList
+}
+
+function getBishopMoves1(field, allegiance) {
+   
+    var positions = convertFieldIntoPositionNumbers(field)
+    var moveList = new Object()
+
+    for (z = 0; z < 4; z++){
+        
+        var directionLabel = 'bishop-direction-' + z
+        var moves = []
+        
+        var x = 1
+        var y = 1
+        if(1 < z) {x = -1}
+        if(z%2==0) {y = -1} 
+        
+        for(let i = positions[0] + x, j = positions[1] + y;
+            isOnBoard(i,j);
+            i += x, j += y){      
+            moves.push(convertNumberPositionsIntoField(i, j))
+            moveList[directionLabel] = moves
+        }
+    }
+    return moveList
+}

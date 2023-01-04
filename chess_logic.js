@@ -185,6 +185,10 @@ class Piece{
         return this.#kind
     }
 
+    getField() {
+        return this.#field
+    }
+
     getMoveList() {
 
         switch(this.#kind){
@@ -193,19 +197,19 @@ class Piece{
                 return getPawnMoves(this.#field, this.#allegiance)
 
             case 'bishop':
-                return getBishopMoves(this.#field, this.#allegiance)
+                return getMoves(this, bishopColumnInstructions, bishopRowInstructions)
             
             case 'knight':
                  return getKnightMoves(this.#field, this.#allegiance)
 
             case 'rook':
-                return getRookMoves(this.#field, this.#allegiance)
+                return getMoves(this, rookColumnInstructions, rookRowInstructions)
 
             case 'queen':
-                return getQueenMoves(this.#field, this.#allegiance)
+                return getQueenMoves(this)
 
             case 'king':
-                return getKingMoves(this.#field, this.#allegiance)
+                return getKingMoves(this)
             
             case 'ultimate':
                 return getUltimateMoves(this.#field, this.#allegiance)
@@ -225,6 +229,30 @@ function boundariesCheck(positionNumber) {
     return (positionNumber > 0 && positionNumber < 9)
 }
 
+function getMoves(piece, columnInstructions, rowInstructions) {
+   
+    var positions = convertFieldIntoPositionNumbers(piece.getField())
+    var moveList = new Object()
+
+    for (z = 0; z < 4; z++){
+        
+        var directionLabel =  piece.getKind() + '-direction-' + z
+        var moves = []
+        
+        var x = columnInstructions(z)
+        var y = rowInstructions(z)
+        
+        for(let i = positions[0] + x, j = positions[1] + y;
+            isOnBoard(i,j);
+            i += x, j += y){      
+            moves.push(convertNumberPositionsIntoField(i, j))
+            moveList[directionLabel] = moves
+        }
+    }
+    return moveList
+}
+
+var testPiece = new Piece('black-queen', 'D4' )
 
 function getPawnMoves(field, allegiance) {
     
@@ -285,31 +313,21 @@ function getPawnMoves(field, allegiance) {
     return moveList
 }
 
-function getBishopMoves(field, allegiance) {
-   
-    var positions = convertFieldIntoPositionNumbers(field)
-    var moveList = new Object()
-
-    for (z = 0; z < 4; z++){
-        
-        var directionLabel = 'bishop-direction-' + z
-        var moves = []
-        
-        var x = 1
-        var y = 1
-        if(1 < z) {x = -1}
-        if(z%2==0) {y = -1} 
-        
-        for(let i = positions[0] + x, j = positions[1] + y;
-            isOnBoard(i,j);
-            i += x, j += y){      
-            moves.push(convertNumberPositionsIntoField(i, j))
-            moveList[directionLabel] = moves
-        }
+function bishopColumnInstructions(n) {
+    if (1<n) {
+      return 1;
+    } else {
+      return -1;
     }
-    return moveList
 }
 
+function bishopRowInstructions(n) {
+    if (n%2==0) {
+      return 1;
+    } else {
+      return -1;
+    }
+}
 
 function getKnightMoves(field, allegiance) {
 
@@ -365,11 +383,11 @@ function getKnightMoves(field, allegiance) {
 }
 
 function rookColumnInstructions(n) {
-        if (n < 2) {
-          return 0;
-        } else {
-          return Math.pow(-1,n);
-        }
+    if (n < 2) {
+      return 0;
+    } else {
+      return Math.pow(-1,n);
+    }
 }
 
 function rookRowInstructions(n) {
@@ -379,35 +397,16 @@ function rookRowInstructions(n) {
       return Math.pow(-1,n);
     }
 }
-
-function getRookMoves(field, allegiance) {
-   
-    var positions = convertFieldIntoPositionNumbers(field)
-    var moveList = new Object()
-    for (z = 0; z < 4; z++){
-        var directionLabel = 'rook-direction-' + z
-        var moves = []
-        
-        var x = rookColumnInstructions(z)
-        var y = rookRowInstructions(z)
-        
-        for(let i = positions[0] + x, j = positions[1] + y;
-            isOnBoard(i,j);
-            i += x, j += y){      
-            moves.push(convertNumberPositionsIntoField(i, j))
-            moveList[directionLabel] = moves
-        }
-    }
-    return moveList
-}
           
-function getQueenMoves(field, allegiance) {
-    var moveList = Object.assign({},getRookMoves(field),getBishopMoves(field))
+function getQueenMoves(piece) {
+    var moveList = Object.assign({},
+        getMoves(new Piece(piece.getAllegiance()+'-rook', piece.getField()), rookColumnInstructions, rookRowInstructions),
+        getMoves(new Piece(piece.getAllegiance()+'-bishop', piece.getField()), bishopColumnInstructions, bishopRowInstructions))
     return moveList
 }
 
-function getKingMoves(field, allegiance){
-    var queenMoveList = getQueenMoves(field)
+function getKingMoves(piece){
+    var queenMoveList = getQueenMoves(new Piece(piece.getAllegiance()+'-queen', piece.getField()))
 
     var moveList = new Object()
 
@@ -487,7 +486,7 @@ function isValidChessField(field) {
     if (field.length !== 2)         {return false}
     if (!/[A-H]/.test(field[0]))    {return false}
     if (!/[1-8]/.test(field[1]))    {return false}
-    return true;
+    return true
 }  
 
 function promptForValidInput() {
