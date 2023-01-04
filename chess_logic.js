@@ -296,28 +296,28 @@ function getBishopMoves(field, allegiance) {
     var northWestMoves = []
 
     for(let i = positions[0]+1, j = positions[1]+1;
-        i < 9 && j < 9;
+        isOnBoard(i,j);
         i++, j++){      
         northEastMoves.push(convertNumberPositionsIntoField(i, j))
         moveList.northEast = northEastMoves
     }
 
     for(let i = positions[0]+1, j = positions[1]-1;
-        i < 9 && j > 0;
+        isOnBoard(i,j);
         i++, j--){      
         southEastMoves.push(convertNumberPositionsIntoField(i, j))
         moveList.southEast = southEastMoves
     }
 
     for(let i = positions[0]-1, j = positions[1]-1;
-        i > 0 && j > 0;
+        isOnBoard(i,j);
         i--, j--){      
         southWestMoves.push(convertNumberPositionsIntoField(i, j))
         moveList.southWest = southWestMoves
     }
 
     for(let i = positions[0]-1, j = positions[1]+1;
-        i > 0 && j < 9;
+        isOnBoard(i,j);
         i--, j++){      
         northWestMoves.push(convertNumberPositionsIntoField(i, j))
         moveList.northWest = northWestMoves
@@ -343,35 +343,35 @@ function getKnightMoves(field, allegiance) {
     let x = positions[0]
     let y = positions[1]
 
-    if((x-1) > 0 && (y+2) < 9) {      
+    if(isOnBoard(x-1, y+2)) {      
         northByWestMoves.push(convertNumberPositionsIntoField(x-1, y+2))
         moveList.northByWest = northByWestMoves
     }
-    if((x+1) < 9 && (y+2) < 9) {      
+    if(isOnBoard(x+1, y+2)) {      
         northByEastMoves.push(convertNumberPositionsIntoField(x+1, y+2))
         moveList.northByEast = northByEastMoves
     }
-    if((x+2) < 9 && (y+1) < 9) {      
+    if(isOnBoard(x+2, y+1)) {      
         eastByNorthMoves.push(convertNumberPositionsIntoField(x+2, y+1))
         moveList.eastByNorth = eastByNorthMoves
     }
-    if((x+2) < 9 && (y-1) > 0) {      
+    if(isOnBoard(x+2, y-1)) {      
         eastBySouthMoves.push(convertNumberPositionsIntoField(x+2, y-1))
         moveList.eastBySouth = eastBySouthMoves
     }
-    if((x+1) < 9 && (y-2) > 0) {      
+    if(isOnBoard(x+1, y-2)) {      
         southByEastMoves.push(convertNumberPositionsIntoField(x+1, y-2))
         moveList.southByEast = southByEastMoves
     }
-    if((x-1) > 0 && (y-2) > 0) {      
+    if(isOnBoard(x-1, y-2)) {      
         southByWestMoves.push(convertNumberPositionsIntoField(x-1, y-2))
         moveList.southByWest = southByWestMoves
     }
-    if((x-2) > 0 && (y-1) > 0) {      
+    if(isOnBoard(x-2, y-1)) {      
         westBySouthMoves.push(convertNumberPositionsIntoField(x-2, y-1))
         moveList.westBySouth = westBySouthMoves
     }
-    if((x-2) > 0 && (y+1) < 9) {      
+    if(isOnBoard(x-2, y+1)) {      
         westByNorthMoves.push(convertNumberPositionsIntoField(x-2, y+1))
         moveList.westByNorth = westByNorthMoves
     }
@@ -389,22 +389,22 @@ function getRookMoves(field, allegiance) {
     var southMoves = []
     var westMoves = []
 
-    for(let i = positions[1] + 1;  i < 9; i++){      
+    for(let i = positions[1] + 1;  isOnBoard(i); i++){      
         northMoves.push(convertNumberPositionsIntoField(positions[0], i))
         moveList.north = northMoves
     }
 
-    for(let i = positions[1] - 1;  i > 0; i--){      
+    for(let i = positions[1] - 1;  isOnBoard(i); i--){      
         southMoves.push(convertNumberPositionsIntoField(positions[0], i))
         moveList.south = southMoves
     }
 
-    for(let i = positions[0] - 1;  i > 0; i--){      
+    for(let i = positions[0] - 1;  isOnBoard(i); i--){      
         westMoves.push(convertNumberPositionsIntoField(i, positions[1]))
         moveList.west = westMoves
     }
 
-    for(let i = positions[0] + 1;  i < 9; i++){      
+    for(let i = positions[0] + 1;  isOnBoard(i); i++){      
         eastMoves.push(convertNumberPositionsIntoField(i, positions[1]))
         moveList.east = eastMoves
     }
