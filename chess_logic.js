@@ -434,7 +434,18 @@ function getUltimateMoves(field, allegiance) {
     return moveList
 }
 
-
+function generateHTMLTypeSelection(pieces) {
+    let htmlSelection = '';
+    for (let i = 0; i < pieces.length; i++) {
+        let addCheckedToFirstItem = 'checked'
+        if(i != 0) {addCheckedToFirstItem = ''}
+        htmlSelection +=
+            `<input type="radio" id="${pieces[i]}${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="${pieces[i]}" ${addCheckedToFirstItem} ">
+             <label for="${pieces[i]}${globalSettingsCounter}" class="type-selector-item">${pieces[i].toUpperCase()}</label>`;
+    }
+    return htmlSelection;
+}
+  
 function addAnalysisSettingsItem(){
     var settingsItem = document.createElement('div')
     settingsItem.classList.add('analysis-settings-container')
@@ -448,22 +459,7 @@ const analysisSettingsItem = `
     <label for="black${globalSettingsCounter}" class="allegiance-selector-item">BLACK</label>
 </div>
 <div class="analysis-type-selector settings-item">
-<input type="radio" id="pawn${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="pawn" checked>
-<label for="pawn${globalSettingsCounter}" class="type-selector-item">PAWN</label>
-<input type="radio" id="bishop${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="bishop">
-<label for="bishop${globalSettingsCounter}" class="type-selector-item">BISHOP</label>                    
-<input type="radio" id="knight${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight">
-<label for="knight${globalSettingsCounter}" class="type-selector-item">KNIGHT</label>
-<input type="radio" id="rook${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="rook">
-<label for="rook${globalSettingsCounter}" class="type-selector-item">ROOK</label>
-<input type="radio" id="queen${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="queen">
-<label for="queen${globalSettingsCounter}" class="type-selector-item">QUEEN</label>
-<input type="radio" id="king${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="king">
-<label for="king${globalSettingsCounter}" class="type-selector-item">KING</label>
-<input type="radio" id="knight-path${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight-path">
-<label for="knight-path${globalSettingsCounter}" class="type-selector-item">KNIGHT PATH</label>
-<input type="radio" id="ultimate${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="ultimate">
-<label for="ultimate${globalSettingsCounter}" class="type-selector-item">ULTIMATE</label>
+${generateHTMLTypeSelection(PIECETYPE)}
 </div>
 <div class="analysis-controls settings-item">
     <input type="text" class="field-input analysis-controls-item" pattern="[A-H]+[1-8]" title="Please enter a valid chessboard field!" value="A1">

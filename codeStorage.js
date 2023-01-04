@@ -121,3 +121,23 @@ function markLanes() {
         field.classList.add("marked")
     }
 }
+/*
+
+<input type="radio" id="pawn${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="pawn" checked>
+<label for="pawn${globalSettingsCounter}" class="type-selector-item">PAWN</label>
+<input type="radio" id="bishop${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="bishop">
+<label for="bishop${globalSettingsCounter}" class="type-selector-item">BISHOP</label>                    
+<input type="radio" id="knight${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight">
+<label for="knight${globalSettingsCounter}" class="type-selector-item">KNIGHT</label>
+<input type="radio" id="rook${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="rook">
+<label for="rook${globalSettingsCounter}" class="type-selector-item">ROOK</label>
+<input type="radio" id="queen${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="queen">
+<label for="queen${globalSettingsCounter}" class="type-selector-item">QUEEN</label>
+<input type="radio" id="king${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="king">
+<label for="king${globalSettingsCounter}" class="type-selector-item">KING</label>
+<input type="radio" id="knight-path${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="knight-path">
+<label for="knight-path${globalSettingsCounter}" class="type-selector-item">KNIGHT PATH</label>
+<input type="radio" id="ultimate${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="ultimate">
+<label for="ultimate${globalSettingsCounter}" class="type-selector-item">ULTIMATE</label>
+
+*/
