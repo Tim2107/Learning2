@@ -200,7 +200,7 @@ class Piece{
                 return getMoves(this, bishopColumnInstructions, bishopRowInstructions)
             
             case 'knight':
-                 return getKnightMoves(this.#field, this.#allegiance)
+                 return getKnightMoves(this)
 
             case 'rook':
                 return getMoves(this, rookColumnInstructions, rookRowInstructions)
@@ -212,7 +212,7 @@ class Piece{
                 return getKingMoves(this)
             
             case 'ultimate':
-                return getUltimateMoves(this.#field, this.#allegiance)
+                return getUltimateMoves(this)
         }
     }
 }
@@ -251,8 +251,6 @@ function getMoves(piece, columnInstructions, rowInstructions) {
     }
     return moveList
 }
-
-var testPiece = new Piece('black-queen', 'D4' )
 
 function getPawnMoves(field, allegiance) {
     
@@ -314,99 +312,58 @@ function getPawnMoves(field, allegiance) {
 }
 
 function bishopColumnInstructions(n) {
-    if (1<n) {
-      return 1;
-    } else {
-      return -1;
-    }
+    return((1<n) ? 1 : -1)
 }
 
 function bishopRowInstructions(n) {
-    if (n%2==0) {
-      return 1;
-    } else {
-      return -1;
-    }
+    return((n%2==0) ? 1 : -1)
 }
 
-function getKnightMoves(field, allegiance) {
 
-    var positions = convertFieldIntoPositionNumbers(field)
-    var moveList = new Object()
+function knightShortColumnInstructions(n) {
+    return((1<n) ? 1 : -1)
+}
 
-    var northByWestMoves = []
-    var northByEastMoves = []
-    var eastByNorthMoves = []
-    var eastBySouthMoves = []
-    var southByEastMoves = []
-    var southByWestMoves = []
-    var westBySouthMoves = []
-    var westByNorthMoves = []
-    
-    let x = positions[0]
-    let y = positions[1]
+function knightLongColumnInstructions(n) {
+    return((1<n) ? 2 : -2)
+}
 
-    if(isOnBoard(x-1, y+2)) {      
-        northByWestMoves.push(convertNumberPositionsIntoField(x-1, y+2))
-        moveList.northByWest = northByWestMoves
-    }
-    if(isOnBoard(x+1, y+2)) {      
-        northByEastMoves.push(convertNumberPositionsIntoField(x+1, y+2))
-        moveList.northByEast = northByEastMoves
-    }
-    if(isOnBoard(x+2, y+1)) {      
-        eastByNorthMoves.push(convertNumberPositionsIntoField(x+2, y+1))
-        moveList.eastByNorth = eastByNorthMoves
-    }
-    if(isOnBoard(x+2, y-1)) {      
-        eastBySouthMoves.push(convertNumberPositionsIntoField(x+2, y-1))
-        moveList.eastBySouth = eastBySouthMoves
-    }
-    if(isOnBoard(x+1, y-2)) {      
-        southByEastMoves.push(convertNumberPositionsIntoField(x+1, y-2))
-        moveList.southByEast = southByEastMoves
-    }
-    if(isOnBoard(x-1, y-2)) {      
-        southByWestMoves.push(convertNumberPositionsIntoField(x-1, y-2))
-        moveList.southByWest = southByWestMoves
-    }
-    if(isOnBoard(x-2, y-1)) {      
-        westBySouthMoves.push(convertNumberPositionsIntoField(x-2, y-1))
-        moveList.westBySouth = westBySouthMoves
-    }
-    if(isOnBoard(x-2, y+1)) {      
-        westByNorthMoves.push(convertNumberPositionsIntoField(x-2, y+1))
-        moveList.westByNorth = westByNorthMoves
-    }
+function knightShortRowInstructions(n) {
+    return((n%2==0) ? 1 : -1)
+}
 
-    return moveList
+function knightLongRowInstructions(n) {
+    return((n%2==0) ? 2 : -2)
+}
+
+function getKnightMoves(piece) {
+    var moveList = Object.assign({},
+        getMoves(new Piece(piece.getAllegiance()+'-knight_A', piece.getField()), knightLongColumnInstructions, knightShortRowInstructions),
+        getMoves(new Piece(piece.getAllegiance()+'-knight_B', piece.getField()), knightShortColumnInstructions, knightLongRowInstructions))
+
+        for (const key in moveList) {     
+            moveList[key]=moveList[key][0]
+        }
+       return moveList
 }
 
 function rookColumnInstructions(n) {
-    if (n < 2) {
-      return 0;
-    } else {
-      return Math.pow(-1,n);
-    }
+    return ((n < 2) ? 0 : Math.pow(-1,n))
 }
 
 function rookRowInstructions(n) {
-    if (n > 1) {
-      return 0;
-    } else {
-      return Math.pow(-1,n);
-    }
+    return ((n > 1) ? 0 : Math.pow(-1,n))
 }
           
 function getQueenMoves(piece) {
     var moveList = Object.assign({},
-        getMoves(new Piece(piece.getAllegiance()+'-rook', piece.getField()), rookColumnInstructions, rookRowInstructions),
-        getMoves(new Piece(piece.getAllegiance()+'-bishop', piece.getField()), bishopColumnInstructions, bishopRowInstructions))
+        getMoves(new Piece(piece.getAllegiance()+'-queen_rook_part', piece.getField()), rookColumnInstructions, rookRowInstructions),
+        getMoves(new Piece(piece.getAllegiance()+'-queen_bishop_part', piece.getField()), bishopColumnInstructions, bishopRowInstructions))
     return moveList
 }
 
 function getKingMoves(piece){
-    var queenMoveList = getQueenMoves(new Piece(piece.getAllegiance()+'-queen', piece.getField()))
+    var queenMoveList = getQueenMoves(new Piece(piece.getAllegiance()+'-king', piece.getField()))
 
     var moveList = new Object()
 
@@ -417,8 +374,8 @@ function getKingMoves(piece){
    return moveList
 }
    
-function getUltimateMoves(field, allegiance) {
-    var moveList = Object.assign({},getQueenMoves(field),getKnightMoves(field))
+function getUltimateMoves(piece) {
+    var moveList = Object.assign({},getQueenMoves(piece),getKnightMoves(piece))
     return moveList
 }
 
@@ -439,9 +396,7 @@ function addAnalysisSettingsItem(){
     settingsItem.classList.add('analysis-settings-container')
     var analysisSettings = document.getElementsByClassName('analysis-settings')[0]
 
-
-
-const analysisSettingsItem = `
+    const analysisSettingsItem = `
 <div class="allegiance-selector settings-item">
     <input type="radio" id="white${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="white" checked>
     <label for="white${globalSettingsCounter}" class="allegiance-selector-item">WHITE</label>
@@ -463,7 +418,6 @@ ${generateHTMLTypeSelection(PIECETYPE)}
     settingsItem.innerHTML=analysisSettingsItem
     analysisSettings.append(settingsItem)
     
-    var fieldInputIterable = settingsItem.getElementsByClassName('field-input')
     var analysisToggle = settingsItem.getElementsByClassName('analysis-toggle')[0]
     var removeButton = settingsItem.getElementsByClassName('btn-remove')[0]
     

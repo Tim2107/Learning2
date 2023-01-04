@@ -304,3 +304,62 @@ function getBishopMoves1(field, allegiance) {
     }
     return moveList
 }
+
+
+
+ 
+
+
+
+function getKnightMoves1(field, allegiance) {
+
+    var positions = convertFieldIntoPositionNumbers(field)
+    var moveList = new Object()
+
+    var northByWestMoves = []
+    var northByEastMoves = []
+    var eastByNorthMoves = []
+    var eastBySouthMoves = []
+    var southByEastMoves = []
+    var southByWestMoves = []
+    var westBySouthMoves = []
+    var westByNorthMoves = []
+    
+    let x = positions[0]
+    let y = positions[1]
+
+    if(isOnBoard(x-1, y+2)) {      
+        northByWestMoves.push(convertNumberPositionsIntoField(x-1, y+2))
+        moveList.northByWest = northByWestMoves
+    }
+    if(isOnBoard(x+1, y+2)) {      
+        northByEastMoves.push(convertNumberPositionsIntoField(x+1, y+2))
+        moveList.northByEast = northByEastMoves
+    }
+    if(isOnBoard(x+2, y+1)) {      
+        eastByNorthMoves.push(convertNumberPositionsIntoField(x+2, y+1))
+        moveList.eastByNorth = eastByNorthMoves
+    }
+    if(isOnBoard(x+2, y-1)) {      
+        eastBySouthMoves.push(convertNumberPositionsIntoField(x+2, y-1))
+        moveList.eastBySouth = eastBySouthMoves
+    }
+    if(isOnBoard(x+1, y-2)) {      
+        southByEastMoves.push(convertNumberPositionsIntoField(x+1, y-2))
+        moveList.southByEast = southByEastMoves
+    }
+    if(isOnBoard(x-1, y-2)) {      
+        southByWestMoves.push(convertNumberPositionsIntoField(x-1, y-2))
+        moveList.southByWest = southByWestMoves
+    }
+    if(isOnBoard(x-2, y-1)) {      
+        westBySouthMoves.push(convertNumberPositionsIntoField(x-2, y-1))
+        moveList.westBySouth = westBySouthMoves
+    }
+    if(isOnBoard(x-2, y+1)) {      
+        westByNorthMoves.push(convertNumberPositionsIntoField(x-2, y+1))
+        moveList.westByNorth = westByNorthMoves
+    }
+
+    return moveList
+}
