@@ -1,3 +1,15 @@
+const markingStyles = ['white','black','occupied','level1','level2','level3','level4','level5']
+const ALLEGIANCE = ['white', 'black']
+const PIECETYPE = ['pawn', 'bishop', 'knight', 'rook', 'queen', 'king', 'ultimate'] 
+const waitTimeInMilliseconds = 100
+
+const allFields = [];
+for (let i = 1; i <= 8; i++) {
+  for (let j = 'A'; j <= 'H'; j = String.fromCharCode(j.charCodeAt(0) + 1)) {
+    allFields.push(j + i);
+  }
+}
+
 var globalSettingsCounter = 1
 
 if (document. readyState == 'loading') {
@@ -7,7 +19,6 @@ if (document. readyState == 'loading') {
 }
 
 function ready(){
-
 var resetButton = document.getElementById("reset")
 resetButton.addEventListener("click", resetFields)
 
@@ -18,16 +29,6 @@ var addAnalysisItemButton = document.getElementById("add-analyzer")
 addAnalysisItemButton.addEventListener("click", addAnalysisSettingsItem)
 }
 
-const markingStyles = ['white','black','occupied','level1','level2','level3','level4','level5']
-const waitTimeInMilliseconds = 100
-
-const allFields = [];
-for (let i = 1; i <= 8; i++) {
-  for (let j = 'A'; j <= 'H'; j = String.fromCharCode(j.charCodeAt(0) + 1)) {
-    allFields.push(j + i);
-  }
-}
-
 async function testDisplay() {
     for (const index in allFields) {
         var piece = new Piece(getSelectedPieceTypes()[0], allFields[index])
@@ -35,6 +36,17 @@ async function testDisplay() {
         await delay(waitTimeInMilliseconds)
         resetFields()
     }
+}
+
+function getSelectedPieceTypes() {
+    var pieceTypes = document.getElementsByClassName("selector")
+    var selectedPieceTypes = []
+    for (const checkbox of pieceTypes) {
+        if(checkbox.checked) {
+            selectedPieceTypes.push(checkbox.value)
+        }      
+    }
+    return selectedPieceTypes
 }
 
 function delay(time) {
@@ -117,17 +129,6 @@ function resetFields(){
     }
 }
 
-function getSelectedPieceTypes() {
-    var pieceTypes = document.getElementsByClassName("selector")
-    var selectedPieceTypes = []
-    for (const checkbox of pieceTypes) {
-        if(checkbox.checked) {
-            selectedPieceTypes.push(checkbox.value)
-        }      
-    }
-    return selectedPieceTypes
-}
-
 function convertNotation(input) {
     if (input >= 1 && input <= 8) {
       return String.fromCharCode(input + 64);
@@ -155,6 +156,76 @@ function getMoveStructur(piece) {
         return moveList
 }
 
+class Piece{
+    pieceType
+    #allegiance
+    #kind
+    #field
+
+    constructor(pieceType, field){
+        this.pieceType = pieceType
+        this.#allegiance = this.#determineAllegiance()
+        this.#kind = this.#determineKind()
+        this.#field = field
+    }
+
+    #determineAllegiance() {
+        return (this.pieceType.split("-"))[0]    
+    }
+
+    #determineKind() {
+        return (this.pieceType.split("-"))[1]    
+    }
+
+    getAllegiance() {
+        return this.#allegiance
+    }
+
+    getKind() {
+        return this.#kind
+    }
+
+    getMoveList() {
+
+        switch(this.#kind){
+
+            case 'pawn':
+                return getPawnMoves(this.#field, this.#allegiance)
+
+            case 'bishop':
+                return getBishopMoves(this.#field, this.#allegiance)
+            
+            case 'knight':
+                 return getKnightMoves(this.#field, this.#allegiance)
+
+            case 'rook':
+                return getRookMoves(this.#field, this.#allegiance)
+
+            case 'queen':
+                return getQueenMoves(this.#field, this.#allegiance)
+
+            case 'king':
+                return getKingMoves(this.#field, this.#allegiance)
+            
+            case 'ultimate':
+                return getUltimateMoves(this.#field, this.#allegiance)
+        }
+    }
+}
+
+function isOnBoard(positionNumber1, positionNumber2){
+    if(positionNumber2 == null) {
+        return boundariesCheck(positionNumber1)
+    } 
+    
+    return (boundariesCheck(positionNumber1) && boundariesCheck(positionNumber2))
+}
+
+function boundariesCheck(positionNumber) {
+    return (positionNumber > 0 && positionNumber < 9)
+}
+
+
 function getPawnMoves(field, allegiance) {
     
     var positions = convertFieldIntoPositionNumbers(field)
@@ -173,15 +244,15 @@ function getPawnMoves(field, allegiance) {
 
     if(allegiance == 'white') {
         if(j == 1) {return}
-        if((i-1) > 0 && (j+1) < 9) {
+        if(isOnBoard(i-1,j+1)) {
             northWestMoves.push(convertNumberPositionsIntoField(i-1,j+1))
             moveList.northWest = northWestMoves
         }
-        if((j+1) < 9) {
+        if(isOnBoard(j+1)) {
             northMoves.push(convertNumberPositionsIntoField(i,j+1))
             moveList.north = northMoves
         }
-        if((i+1) < 9 && (j+1) < 9) {
+        if(isOnBoard(i+1,j+1)) {
             northEastMoves.push(convertNumberPositionsIntoField(i+1,j+1))
             moveList.northEast = northEastMoves
         }
@@ -193,15 +264,15 @@ function getPawnMoves(field, allegiance) {
 
     if(allegiance == 'black') {
         if(j == 8) {return}
-        if((i-1) > 0 && (j-1) > 0) {
+        if(isOnBoard(i-1,j-1)) {
             southWestMoves.push(convertNumberPositionsIntoField(i-1,j-1))
             moveList.southWest = southWestMoves
         }
-        if((j-1) > 0) {
+        if(isOnBoard(j-1)) {
             southMoves.push(convertNumberPositionsIntoField(i,j-1))
             moveList.south = southMoves
         }
-        if((i+1) < 9 && (j-1) > 0) {
+        if(isOnBoard(i+1,j-1)) {
             southEastMoves.push(convertNumberPositionsIntoField(i+1,j-1))
             moveList.southEast = southEastMoves
         }
@@ -363,62 +434,6 @@ function getUltimateMoves(field, allegiance) {
     return moveList
 }
 
-class Piece{
-    pieceType
-    #allegiance
-    #kind
-    #field
-
-    constructor(pieceType, field){
-        this.pieceType = pieceType
-        this.#allegiance = this.#determineAllegiance()
-        this.#kind = this.#determineKind()
-        this.#field = field
-    }
-
-    #determineAllegiance() {
-        return (this.pieceType.split("-"))[0]    
-    }
-
-    #determineKind() {
-        return (this.pieceType.split("-"))[1]    
-    }
-
-    getAllegiance() {
-        return this.#allegiance
-    }
-
-    getKind() {
-        return this.#kind
-    }
-
-    getMoveList() {
-
-        switch(this.#kind){
-
-            case 'pawn':
-                return getPawnMoves(this.#field, this.#allegiance)
-
-            case 'bishop':
-                return getBishopMoves(this.#field, this.#allegiance)
-            
-            case 'knight':
-                 return getKnightMoves(this.#field, this.#allegiance)
-
-            case 'rook':
-                return getRookMoves(this.#field, this.#allegiance)
-
-            case 'queen':
-                return getQueenMoves(this.#field, this.#allegiance)
-
-            case 'king':
-                return getKingMoves(this.#field, this.#allegiance)
-            
-            case 'ultimate':
-                return getUltimateMoves(this.#field, this.#allegiance)
-        }
-    }
-}
 
 function addAnalysisSettingsItem(){
     var settingsItem = document.createElement('div')
