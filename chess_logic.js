@@ -53,6 +53,131 @@ function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
   
+function addAnalysisSettingsItem(){
+    var settingsItem = document.createElement('div')
+    settingsItem.classList.add('analysis-settings-container')
+    var analysisSettings = document.getElementsByClassName('analysis-settings')[0]
+
+    const analysisSettingsItem = `
+<div class="allegiance-selector settings-item">
+    <input type="radio" id="white${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="white" checked>
+    <label for="white${globalSettingsCounter}" class="allegiance-selector-item">WHITE</label>
+    <input type="radio" id="black${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="black">
+    <label for="black${globalSettingsCounter}" class="allegiance-selector-item">BLACK</label>
+</div>
+<div class="analysis-type-selector settings-item">
+${generateHTMLTypeSelection(PIECETYPE)}
+</div>
+<div class="analysis-controls settings-item">
+    <input type="text" class="field-input analysis-controls-item" pattern="[A-H]+[1-8]" title="Please enter a valid chessboard field!" value="A1">
+    <label class="switch analysis-controls-item">
+        <input type="checkbox" class="analysis-toggle">
+        <span class="slider round"></span>
+    </label>
+    <button type="button" class="btn btn-remove analysis-controls-item">x</button>
+</div>
+`
+    settingsItem.innerHTML=analysisSettingsItem
+    analysisSettings.append(settingsItem)
+    
+    var analysisToggle = settingsItem.getElementsByClassName('analysis-toggle')[0]
+    var removeButton = settingsItem.getElementsByClassName('btn-remove')[0]
+    
+    analysisToggle.addEventListener('click', toggleAnalysis)
+    removeButton.addEventListener('click', removeAnalysisItem)
+    globalSettingsCounter++
+}
+
+function generateHTMLTypeSelection(pieces) {
+    let htmlSelection = '';
+    for (let i = 0; i < pieces.length; i++) {
+        let addCheckedToFirstItem = 'checked'
+        if(i != 0) {addCheckedToFirstItem = ''}
+        htmlSelection +=
+            `<input type="radio" id="${pieces[i]}${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="${pieces[i]}" ${addCheckedToFirstItem} ">
+             <label for="${pieces[i]}${globalSettingsCounter}" class="type-selector-item">${pieces[i].toUpperCase()}</label>`;
+    }
+    return htmlSelection;
+}
+
+function toggleAnalysis(event){
+    var toggle = event.target
+    var targetAnalyzer = toggle.parentElement.parentElement.parentElement
+    var allegianceSelection = targetAnalyzer.getElementsByClassName('allegiance-selector')[0].getElementsByTagName("input")
+    var selectedAllegiance = getSelectedItem(allegianceSelection).value
+    var typeSelection = targetAnalyzer.getElementsByClassName('analysis-type-selector')[0].getElementsByTagName("input")
+    var selectedType = getSelectedItem(typeSelection).value
+    var selectedPiece = selectedAllegiance + "-" + selectedType
+    var analysisControls = toggle.parentElement.parentElement
+    var fieldInputIterable = analysisControls.getElementsByClassName('field-input')
+    var fieldInput = fieldInputIterable[0]
+    if(toggle.checked) {
+        fieldInput.value = checkInput(fieldInput.value)
+        var piece = new Piece(selectedPiece, fieldInput.value)
+        markFields(piece)
+        lockSelection(allegianceSelection)
+        lockSelection(typeSelection)  
+        lockSelection(fieldInputIterable)
+    } else {
+        var piece = new Piece(selectedPiece, fieldInput.value)
+        unmarkFields(piece)
+        unlockSelection(allegianceSelection)
+        unlockSelection(typeSelection)
+        unlockSelection(fieldInputIterable)
+    }
+}
+
+function checkInput(input) {
+    if(isValidChessField(input)) {
+        return input
+    }
+    else {
+        return checkInput(promptForValidInput())
+    }
+}
+
+function isValidChessField(field) {
+    if (typeof field !== 'string')  {return false}
+    if (field.length !== 2)         {return false}
+    if (!/[A-H]/.test(field[0]))    {return false}
+    if (!/[1-8]/.test(field[1]))    {return false}
+    return true
+}  
+
+function promptForValidInput() {
+    var infoMessage = `
+    Please enter a valid input.
+    Valid inputs are fields in the form column (A-Z) + row (1-8).
+    Example: A1
+    `
+    return prompt(infoMessage,'')    
+}
+
+function lockSelection(selection) {
+    for (const item of selection) {
+        item.disabled = true}
+}
+
+function unlockSelection(selection) {
+    for (const item of selection) {
+        item.disabled = false}
+}
+
+function getSelectedItem(selection){
+    for (const item of selection) {
+        if(item.checked)
+        return item
+    }
+}
+
+function removeAnalysisItem(event) {
+    var buttonClicked = event.target
+    var analysisToggle = buttonClicked.parentElement.getElementsByClassName("analysis-toggle")[0]
+    if(analysisToggle.checked) {analysisToggle.click()}
+    var targetAnalyzer = buttonClicked.parentElement.parentElement
+    targetAnalyzer.remove()
+}
+  
 function markFields(piece){
     var fieldsToMark = getMoveStructur(piece)
     if(!fieldsToMark.length) {return}
@@ -323,128 +448,7 @@ function getUltimateMoves(piece) {
     return moveList
 }
 
-function generateHTMLTypeSelection(pieces) {
-    let htmlSelection = '';
-    for (let i = 0; i < pieces.length; i++) {
-        let addCheckedToFirstItem = 'checked'
-        if(i != 0) {addCheckedToFirstItem = ''}
-        htmlSelection +=
-            `<input type="radio" id="${pieces[i]}${globalSettingsCounter}" name="analysis-type${globalSettingsCounter}" value="${pieces[i]}" ${addCheckedToFirstItem} ">
-             <label for="${pieces[i]}${globalSettingsCounter}" class="type-selector-item">${pieces[i].toUpperCase()}</label>`;
-    }
-    return htmlSelection;
-}
-  
-function addAnalysisSettingsItem(){
-    var settingsItem = document.createElement('div')
-    settingsItem.classList.add('analysis-settings-container')
-    var analysisSettings = document.getElementsByClassName('analysis-settings')[0]
 
-    const analysisSettingsItem = `
-<div class="allegiance-selector settings-item">
-    <input type="radio" id="white${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="white" checked>
-    <label for="white${globalSettingsCounter}" class="allegiance-selector-item">WHITE</label>
-    <input type="radio" id="black${globalSettingsCounter}" name="allegiance${globalSettingsCounter}" value="black">
-    <label for="black${globalSettingsCounter}" class="allegiance-selector-item">BLACK</label>
-</div>
-<div class="analysis-type-selector settings-item">
-${generateHTMLTypeSelection(PIECETYPE)}
-</div>
-<div class="analysis-controls settings-item">
-    <input type="text" class="field-input analysis-controls-item" pattern="[A-H]+[1-8]" title="Please enter a valid chessboard field!" value="A1">
-    <label class="switch analysis-controls-item">
-        <input type="checkbox" class="analysis-toggle">
-        <span class="slider round"></span>
-    </label>
-    <button type="button" class="btn btn-remove analysis-controls-item">x</button>
-</div>
-`
-    settingsItem.innerHTML=analysisSettingsItem
-    analysisSettings.append(settingsItem)
-    
-    var analysisToggle = settingsItem.getElementsByClassName('analysis-toggle')[0]
-    var removeButton = settingsItem.getElementsByClassName('btn-remove')[0]
-    
-    analysisToggle.addEventListener('click', toggleAnalysis)
-    removeButton.addEventListener('click', removeAnalysisItem)
-    globalSettingsCounter++
-}
 
-function checkInput(input) {
-    if(isValidChessField(input)) {
-        return input
-    }
-    else {
-        return checkInput(promptForValidInput())
-    }
-}
 
-function isValidChessField(field) {
-    if (typeof field !== 'string')  {return false}
-    if (field.length !== 2)         {return false}
-    if (!/[A-H]/.test(field[0]))    {return false}
-    if (!/[1-8]/.test(field[1]))    {return false}
-    return true
-}  
-
-function promptForValidInput() {
-    var infoMessage = `
-    Please enter a valid input.
-    Valid inputs are fields in the form column (A-Z) + row (1-8).
-    Example: A1
-    `
-    return prompt(infoMessage,'')    
-}
-
-function toggleAnalysis(event){
-    var toggle = event.target
-    var targetAnalyzer = toggle.parentElement.parentElement.parentElement
-    var allegianceSelection = targetAnalyzer.getElementsByClassName('allegiance-selector')[0].getElementsByTagName("input")
-    var selectedAllegiance = getSelectedItem(allegianceSelection).value
-    var typeSelection = targetAnalyzer.getElementsByClassName('analysis-type-selector')[0].getElementsByTagName("input")
-    var selectedType = getSelectedItem(typeSelection).value
-    var selectedPiece = selectedAllegiance + "-" + selectedType
-    var analysisControls = toggle.parentElement.parentElement
-    var fieldInputIterable = analysisControls.getElementsByClassName('field-input')
-    var fieldInput = fieldInputIterable[0]
-    if(toggle.checked) {
-        fieldInput.value = checkInput(fieldInput.value)
-        var piece = new Piece(selectedPiece, fieldInput.value)
-        markFields(piece)
-        lockSelection(allegianceSelection)
-        lockSelection(typeSelection)  
-        lockSelection(fieldInputIterable)
-    } else {
-        var piece = new Piece(selectedPiece, fieldInput.value)
-        unmarkFields(piece)
-        unlockSelection(allegianceSelection)
-        unlockSelection(typeSelection)
-        unlockSelection(fieldInputIterable)
-    }
-}
-
-function lockSelection(selection) {
-    for (const item of selection) {
-        item.disabled = true}
-}
-
-function unlockSelection(selection) {
-    for (const item of selection) {
-        item.disabled = false}
-}
-
-function getSelectedItem(selection){
-    for (const item of selection) {
-        if(item.checked)
-        return item
-    }
-}
-
-function removeAnalysisItem(event) {
-    var buttonClicked = event.target
-    var analysisToggle = buttonClicked.parentElement.getElementsByClassName("analysis-toggle")[0]
-    if(analysisToggle.checked) {analysisToggle.click()}
-    var targetAnalyzer = buttonClicked.parentElement.parentElement
-    targetAnalyzer.remove()
-}
 
