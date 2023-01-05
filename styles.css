@@ -152,42 +152,42 @@ input:checked + .slider:before {
     justify-content: center;
 }
 
-.black.occupied {
+.black-occupied {
     background-color: #00FFFF;
 }
 
-.black.level1 {
+.black-level-1 {
     background-color: #7CB9E8;
 }
 
-.black.level2 {
+.black-level-2 {
     background-color: #0066b2;
 }
 
-.black.level3 {
+.black-level-3 {
     background-color: #0039a6;
 }
 
-.black.level4 {
+.black-level-4 {
     background-color: #0a2351;
 }
 
-.white.occupied {
+.white-occupied {
     background-color: #FF0090;
 }
 
-.white.level1 {
+.white-level-1 {
     background-color: #FF6666;
 }
 
-.white.level2 {
+.white-level-2 {
     background-color: #FF0000;
 }
 
-.white.level3 {
+.white-level-3 {
     background-color: #CC0000;
 }
 
-.white.level4 {
+.white-level-4 {
     background-color: #990000;
 }

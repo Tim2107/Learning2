@@ -1,21 +1,79 @@
-const markingStyles = ['white','black','occupied','level1','level2','level3','level4','level5']
+//import _ from "./underscore";
+
 const ALLEGIANCE = ['white', 'black']
 const PIECETYPE = ['pawn', 'bishop', 'knight', 'rook', 'queen', 'king', 'ultimate'] 
+const WHITESTYLES = createStyles('white')
+const BLACKSTYLES = createStyles('black')
+
+function createStyles(allegiance) {
+    let array = [];
+    for (let i = 1; i <= 10; i++) {array.push(`${allegiance}-level-${i}`)}
+    return array;
+  }
+    
 const waitTimeInMilliseconds = 100
 
 const allFields = [];
 for (let i = 1; i <= 8; i++) {
   for (let j = 'A'; j <= 'H'; j = String.fromCharCode(j.charCodeAt(0) + 1)) {
-    allFields.push(j + i);
+    allFields.push(j + i)
   }
 }
 
 var globalSettingsCounter = 1
+var currentAnalysis = initializeCurrentAnalysis()
 
 if (document. readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready)
 } else {
     ready()
+}
+
+function initializeCurrentAnalysis() {
+    var initialAnalysis = new Object()
+
+    for (const field of allFields) {
+        var initialObject = new Object()
+        initialObject.white = ''
+        initialObject.black = ''
+        initialAnalysis[field] = initialObject
+    }
+    return initialAnalysis
+}
+
+function createUnifiedMoveList(moveListObject){    
+    var unifiedMoveList = []
+    for (const key in moveListObject) {
+        unifiedMoveList.push(...(moveListObject[key]))
+    }
+    return unifiedMoveList
+}
+
+function addItemToCurrentAnalysis(fieldList, allegiance) {
+    for (const field in fieldList) {
+        currentAnalysis[(fieldList[field])][allegiance] = increaseLevel(currentAnalysis[(fieldList[field])][allegiance])
+    }
+}
+
+function removeItemFromCurrentAnalysis(fieldList, allegiance) {
+    for (const field in fieldList) {
+        currentAnalysis[(fieldList[field])][allegiance] = decreaseLevel(currentAnalysis[(fieldList[field])][allegiance])
+    }
+}
+
+function increaseLevel(level) {
+    if(!level) {return 'level-1'}
+    var levelCssClassnameParts = level.split('-')
+    var increasedLevel = Number(levelCssClassnameParts[1]) + 1
+    return 'level-' + increasedLevel
+}
+
+function decreaseLevel(level) {
+    if(!level) {return}
+    if(level == 'level-1') {return ''}
+    var levelCssClassnameParts = level.split('-')
+    var increasedLevel = Number(levelCssClassnameParts[1]) - 1
+    return 'level-' + increasedLevel
 }
 
 function ready(){
@@ -32,9 +90,12 @@ addAnalysisItemButton.addEventListener("click", addAnalysisSettingsItem)
 async function testDisplay() {
     for (const index in allFields) {
         var piece = new Piece(getSelectedPieceTypes()[0], allFields[index])
-        markFields(piece)
+        var moveList = createUnifiedMoveList(piece.getMoveList())
+        addItemToCurrentAnalysis(moveList, piece.getAllegiance())
+        updateAnalysisDisplay()
         await delay(waitTimeInMilliseconds)
-        resetFields()
+        removeItemFromCurrentAnalysis(moveList, piece.getAllegiance())
+        updateAnalysisDisplay()
     }
 }
 
@@ -100,6 +161,12 @@ function generateHTMLTypeSelection(pieces) {
     return htmlSelection;
 }
 
+function test() {
+    var arr1 = ['1', '4']
+    var arr2 = ['2']
+    var arr3 = ['2', '3' , '4']
+}
+
 function toggleAnalysis(event){
     var toggle = event.target
     var targetAnalyzer = toggle.parentElement.parentElement.parentElement
@@ -114,13 +181,18 @@ function toggleAnalysis(event){
     if(toggle.checked) {
         fieldInput.value = checkInput(fieldInput.value)
         var piece = new Piece(selectedPiece, fieldInput.value)
-        markFields(piece)
+        var moveList = createUnifiedMoveList(piece.getMoveList())
+        addItemToCurrentAnalysis(moveList, piece.getAllegiance())
+        updateAnalysisDisplay()
         lockSelection(allegianceSelection)
         lockSelection(typeSelection)  
         lockSelection(fieldInputIterable)
     } else {
         var piece = new Piece(selectedPiece, fieldInput.value)
-        unmarkFields(piece)
+        var moveList = createUnifiedMoveList(piece.getMoveList())
+        console.log(moveList)
+        removeItemFromCurrentAnalysis(moveList, piece.getAllegiance())
+        updateAnalysisDisplay()
         unlockSelection(allegianceSelection)
         unlockSelection(typeSelection)
         unlockSelection(fieldInputIterable)
@@ -177,59 +249,35 @@ function removeAnalysisItem(event) {
     var targetAnalyzer = buttonClicked.parentElement.parentElement
     targetAnalyzer.remove()
 }
-  
-function markFields(piece){
-    var fieldsToMark = getMoveStructur(piece)
-    if(!fieldsToMark.length) {return}
-    var style = []
-
-    if(piece.getAllegiance() == 'white') {
-        style.push('white')
-        style.push('level1')
-    }
-
-    if(piece.getAllegiance() == 'black') {
-        style.push('black')
-        style.push('level1')
-    }
-
-    displayAnalysis(fieldsToMark, style)   
+ 
+function getMoveStructur(piece) {
+    var moveOptions = piece.getMoveList()
+    var moveList = []
+        for(var key in moveOptions) {
+            moveList = moveList.concat(moveOptions[key])
+        }    
+        return moveList
 }
 
-function unmarkFields(piece){
-    var fieldsToUnmark = getMoveStructur(piece)
-    if(!fieldsToUnmark.length) {return}
-    var style = []
-
-    if(piece.getAllegiance() == 'white') {
-        style.push('white')
-        style.push('level1')
-    }
-
-    if(piece.getAllegiance() == 'black') {
-        style.push('black')
-        style.push('level1')
-    }
-    
-    hideAnalysis(fieldsToUnmark, style)   
-}
-
-
-function displayAnalysis(fieldsToHighlight, style) {
-    for (const field of fieldsToHighlight) {
+function updateAnalysisDisplay() {
+    for (const field of allFields) {
         var coordinates = field.split("")
         var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
         var targetField = document.querySelectorAll(targetFieldClasses)[0]
+        removeStyle(targetField, WHITESTYLES)
+        removeStyle(targetField, BLACKSTYLES)
+        var style = []
+        for (const allegiance in currentAnalysis[field]) {
+            if(currentAnalysis[field][allegiance]){
+                if (allegiance == 'white') {
+                    style.push('white-' + currentAnalysis[field][allegiance])
+                }
+                if (allegiance == 'black') {
+                    style.push('black-' + currentAnalysis[field][allegiance])
+                }   
+            }
+        }
         addStyle(targetField, style)
-    }
-}
-
-function hideAnalysis(fieldsToHighlight, style) {
-    for (const field of fieldsToHighlight) {
-        var coordinates = field.split("")
-        var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
-        var targetField = document.querySelectorAll(targetFieldClasses)[0]
-        removeStyle(targetField, style)
     }
 }
 
@@ -270,15 +318,6 @@ function convertFieldIntoPositionNumbers(field) {
 
 function convertNumberPositionsIntoField(position1,position2) {
     return convertNotation(position1) + position2
-}
-
-function getMoveStructur(piece) {
-    var moveOptions = piece.getMoveList();
-    var moveList = []
-        for(var key in moveOptions) {
-            moveList = moveList.concat(moveOptions[key])
-        }    
-        return moveList
 }
 
 class Piece{
@@ -415,8 +454,10 @@ function getKnightMoves(piece) {
         getMoves(new Piece(piece.getAllegiance()+'-knight_A', piece.getField()), knightLongColumnInstructions, knightShortRowInstructions),
         getMoves(new Piece(piece.getAllegiance()+'-knight_B', piece.getField()), knightShortColumnInstructions, knightLongRowInstructions))
 
-        for (const key in moveList) {     
-            moveList[key]=moveList[key][0]
+        for (const key in moveList) {   
+            var knightMoveArray = []
+            knightMoveArray.push(moveList[key][0])  
+            moveList[key]=knightMoveArray
         }
        return moveList
 }
@@ -433,11 +474,12 @@ function getQueenMoves(piece) {
 
 function getKingMoves(piece){
     var queenMoveList = getQueenMoves(new Piece(piece.getAllegiance()+'-king', piece.getField()))
-
     var moveList = new Object()
 
-    for (const key in queenMoveList) {     
-        moveList[key]=queenMoveList[key][0]
+    for (const key in queenMoveList) {   
+        var kingMoveArray = []
+        kingMoveArray.push(queenMoveList[key][0])  
+        moveList[key]=kingMoveArray
     }
 
    return moveList

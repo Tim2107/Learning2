@@ -363,3 +363,65 @@ function getKnightMoves1(field, allegiance) {
 
     return moveList
 }
+
+function updateAnalysisDisplay(fieldsToHighlight, style) {
+    for (const field of fieldsToHighlight) {
+        var coordinates = field.split("")
+        var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
+        var targetField = document.querySelectorAll(targetFieldClasses)[0]
+        addStyle(targetField, style)
+    }
+}
+
+function hideAnalysis(fieldsToHighlight, style) {
+    for (const field of fieldsToHighlight) {
+        var coordinates = field.split("")
+        var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
+        var targetField = document.querySelectorAll(targetFieldClasses)[0]
+        removeStyle(targetField, style)
+    }
+}
+function markFields(piece){
+    var fieldsToMark = getMoveStructur(piece)
+    if(!fieldsToMark.length) {return}
+    var style = []
+
+    if(piece.getAllegiance() == 'white') {
+        style.push('white')
+        style.push('level-1')
+    }
+
+    if(piece.getAllegiance() == 'black') {
+        style.push('black')
+        style.push('level-1')
+    }
+
+    updateAnalysisDisplay(fieldsToMark, style)   
+}
+
+function unmarkFields(piece){
+    var fieldsToUnmark = getMoveStructur(piece)
+    if(!fieldsToUnmark.length) {return}
+    var style = []
+
+    if(piece.getAllegiance() == 'white') {
+        style.push('white')
+        style.push('level-1')
+    }
+
+    if(piece.getAllegiance() == 'black') {
+        style.push('black')
+        style.push('level-1')
+    }
+    
+    hideAnalysis(fieldsToUnmark, style)   
+}
+
+function hideAnalysis(fieldsToHighlight, style) {
+    for (const field of fieldsToHighlight) {
+        var coordinates = field.split("")
+        var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
+        var targetField = document.querySelectorAll(targetFieldClasses)[0]
+        removeStyle(targetField, style)
+    }
+}
