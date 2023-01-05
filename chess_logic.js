@@ -169,59 +169,27 @@ class Piece{
         this.#field = field
     }
 
-    #determineAllegiance() {
-        return (this.pieceType.split("-"))[0]    
-    }
-
-    #determineKind() {
-        return (this.pieceType.split("-"))[1]    
-    }
-
-    getAllegiance() {
-        return this.#allegiance
-    }
-
-    getKind() {
-        return this.#kind
-    }
-
-    getField() {
-        return this.#field
-    }
+    #determineAllegiance()  {return (this.pieceType.split("-"))[0]}
+    #determineKind()        {return (this.pieceType.split("-"))[1]}
+    getAllegiance()         {return this.#allegiance}
+    getKind()               {return this.#kind}
+    getField()              {return this.#field}
 
     getMoveList() {
-
         switch(this.#kind){
-
-            case 'pawn':
-                return getPawnMoves(this.#field, this.#allegiance)
-
-            case 'bishop':
-                return getMoves(this, bishopColumnInstructions, bishopRowInstructions)
-            
-            case 'knight':
-                 return getKnightMoves(this)
-
-            case 'rook':
-                return getMoves(this, rookColumnInstructions, rookRowInstructions)
-
-            case 'queen':
-                return getQueenMoves(this)
-
-            case 'king':
-                return getKingMoves(this)
-            
-            case 'ultimate':
-                return getUltimateMoves(this)
+            case 'pawn':        return getPawnMoves(this.#field, this.#allegiance)
+            case 'bishop':      return getMoves(this, bishopColumnInstructions, bishopRowInstructions)
+            case 'knight':      return getKnightMoves(this)
+            case 'rook':        return getMoves(this, rookColumnInstructions, rookRowInstructions)
+            case 'queen':       return getQueenMoves(this)
+            case 'king':        return getKingMoves(this)
+            case 'ultimate':    return getUltimateMoves(this)
         }
     }
 }
 
 function isOnBoard(positionNumber1, positionNumber2){
-    if(positionNumber2 == null) {
-        return boundariesCheck(positionNumber1)
-    } 
-    
+    if(positionNumber2 == null) {return boundariesCheck(positionNumber1)} 
     return (boundariesCheck(positionNumber1) && boundariesCheck(positionNumber2))
 }
 
