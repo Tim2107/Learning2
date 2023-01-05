@@ -78,7 +78,7 @@ function decreaseLevel(level) {
 
 function ready(){
 var resetButton = document.getElementById("reset")
-resetButton.addEventListener("click", resetFields)
+resetButton.addEventListener("click", resetFieldStyles)
 
 var testButton = document.getElementById("test")
 testButton.addEventListener("click", testDisplay)
@@ -190,7 +190,6 @@ function toggleAnalysis(event){
     } else {
         var piece = new Piece(selectedPiece, fieldInput.value)
         var moveList = createUnifiedMoveList(piece.getMoveList())
-        console.log(moveList)
         removeItemFromCurrentAnalysis(moveList, piece.getAllegiance())
         updateAnalysisDisplay()
         unlockSelection(allegianceSelection)
@@ -264,8 +263,7 @@ function updateAnalysisDisplay() {
         var coordinates = field.split("")
         var targetFieldClasses = '.row-' + coordinates[1] + '.column-' + coordinates[0]
         var targetField = document.querySelectorAll(targetFieldClasses)[0]
-        removeStyle(targetField, WHITESTYLES)
-        removeStyle(targetField, BLACKSTYLES)
+        removeStyle(targetField, _.union(WHITESTYLES, BLACKSTYLES))
         var style = []
         for (const allegiance in currentAnalysis[field]) {
             if(currentAnalysis[field][allegiance]){
@@ -293,13 +291,9 @@ function removeStyle(targetField, style) {
     }
 }
 
-function resetFields(){
-    var boardTiles = document.getElementsByClassName("tile")
-    for (const tile of boardTiles) {
-        for (var className of markingStyles){
-        tile.classList.remove(className)
-        }
-    }
+function resetFieldStyles(){
+   currentAnalysis = initializeCurrentAnalysis()
+   updateAnalysisDisplay()    
 }
 
 function convertNotation(input) {
