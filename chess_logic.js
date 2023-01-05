@@ -193,9 +193,7 @@ function isOnBoard(positionNumber1, positionNumber2){
     return (boundariesCheck(positionNumber1) && boundariesCheck(positionNumber2))
 }
 
-function boundariesCheck(positionNumber) {
-    return (positionNumber > 0 && positionNumber < 9)
-}
+var boundariesCheck = (positionNumber) => (positionNumber > 0 && positionNumber < 9)
 
 function getMoves(piece, columnInstructions, rowInstructions) {
    
@@ -279,30 +277,13 @@ function getPawnMoves(field, allegiance) {
     return moveList
 }
 
-function bishopColumnInstructions(n) {
-    return((1<n) ? 1 : -1)
-}
+var bishopColumnInstructions =  (n) => (1 < n)      ? 1 : -1
+var bishopRowInstructions =     (n) => (n%2 == 0)   ? 1 : -1
 
-function bishopRowInstructions(n) {
-    return((n%2==0) ? 1 : -1)
-}
-
-
-function knightShortColumnInstructions(n) {
-    return((1<n) ? 1 : -1)
-}
-
-function knightLongColumnInstructions(n) {
-    return((1<n) ? 2 : -2)
-}
-
-function knightShortRowInstructions(n) {
-    return((n%2==0) ? 1 : -1)
-}
-
-function knightLongRowInstructions(n) {
-    return((n%2==0) ? 2 : -2)
-}
+var knightShortColumnInstructions = (n) => (1 < n)      ? 1 : -1
+var knightShortRowInstructions =    (n) => (n%2 ==0 )   ? 1 : -1
+var knightLongColumnInstructions =  (n) => (1 < n)      ? 2 : -2
+var knightLongRowInstructions =     (n) => (n%2 == 0)   ? 2 : -2
 
 function getKnightMoves(piece) {
     var moveList = Object.assign({},
@@ -315,13 +296,8 @@ function getKnightMoves(piece) {
        return moveList
 }
 
-function rookColumnInstructions(n) {
-    return ((n < 2) ? 0 : Math.pow(-1,n))
-}
-
-function rookRowInstructions(n) {
-    return ((n > 1) ? 0 : Math.pow(-1,n))
-}
+var rookColumnInstructions =    (n) => (n < 2) ? 0 : Math.pow(-1,n)
+var rookRowInstructions =       (n) => (n > 1) ? 0 : Math.pow(-1,n)
           
 function getQueenMoves(piece) {
     var moveList = Object.assign({},
@@ -449,12 +425,12 @@ function toggleAnalysis(event){
 
 function lockSelection(selection) {
     for (const item of selection) {
-        item.disabled = true    }
+        item.disabled = true}
 }
 
 function unlockSelection(selection) {
     for (const item of selection) {
-        item.disabled = false    }
+        item.disabled = false}
 }
 
 function getSelectedItem(selection){
