@@ -32,14 +32,23 @@ if (document. readyState == 'loading') {
 function initializeCurrentAnalysis() {
     var initialAnalysis = new Object()
 
-    for (const field of allFields) {
-        var initialObject = new Object()
-        initialObject.white = ''
-        initialObject.black = ''
-        initialAnalysis[field] = initialObject
+
+for (let field of allFields) {
+    initialAnalysis[field] = {};
+
+  for (let allegiance of ALLEGIANCE) {
+    initialAnalysis[field][allegiance] = {};
+    
+    for (let pieceType of PIECETYPE) {
+        initialAnalysis[field][allegiance][pieceType] = "";
     }
-    return initialAnalysis
+    initialAnalysis[field][allegiance]['provisional'] = "";
+  }   
 }
+
+return initialAnalysis
+}
+
 
 function createUnifiedMoveList(moveListObject){    
     var unifiedMoveList = []
@@ -51,13 +60,13 @@ function createUnifiedMoveList(moveListObject){
 
 function addItemToCurrentAnalysis(fieldList, allegiance) {
     for (const field in fieldList) {
-        currentAnalysis[(fieldList[field])][allegiance] = increaseLevel(currentAnalysis[(fieldList[field])][allegiance])
+        currentAnalysis[(fieldList[field])][allegiance]['provisional'] = increaseLevel(currentAnalysis[(fieldList[field])][allegiance]['provisional'],)
     }
 }
 
 function removeItemFromCurrentAnalysis(fieldList, allegiance) {
     for (const field in fieldList) {
-        currentAnalysis[(fieldList[field])][allegiance] = decreaseLevel(currentAnalysis[(fieldList[field])][allegiance])
+        currentAnalysis[(fieldList[field])][allegiance]['provisional'] = decreaseLevel(currentAnalysis[(fieldList[field])][allegiance]['provisional'])
     }
 }
 
@@ -268,10 +277,10 @@ function updateAnalysisDisplay() {
         for (const allegiance in currentAnalysis[field]) {
             if(currentAnalysis[field][allegiance]){
                 if (allegiance == 'white') {
-                    style.push('white-' + currentAnalysis[field][allegiance])
+                    style.push('white-' + currentAnalysis[field][allegiance].provisional)
                 }
                 if (allegiance == 'black') {
-                    style.push('black-' + currentAnalysis[field][allegiance])
+                    style.push('black-' + currentAnalysis[field][allegiance].provisional)
                 }   
             }
         }

@@ -1,180 +1,262 @@
 <!DOCTYPE html>
 <head>
-    <title>Tim's Chess Magician</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="chess_logic.js" async></script>
-    <script  type="module" src="https://cdn.jsdelivr.net/npm/underscore@latest/underscore-umd-min.js"></script>
+  <title>Tim's Chess Magician</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="chess_logic.js" async></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/npm/underscore@latest/underscore-umd-min.js"
+  ></script>
 </head>
 <body>
+  <div class="wrapper">
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="index.html">ANALYZE</a></li>
-                <li><a href="index.html">PLAY</a></li>
-                <li><a href="index.html">ABOUT</a></li>
-            </ul>
-        </nav>
-        <hr>
-        <h1>Tim's Chess Playground</h1>
-        <p>The art of halluzination brought into the strategic realm =)
-            This is Jezz!
-        </p>
+      <nav>
+        <ul>
+          <li><a href="index.html">HOME</a></li>
+          <li><a href="index.html">THE HUD</a></li>
+          <li><a href="index.html">PLAY</a></li>
+          <li><a href="index.html">ABOUT</a></li>
+        </ul>
+      </nav>
+      <hr />
+      <h1>Tim's Chess Playground</h1>
+      <p>
+        The art of halluzination brought into the strategic realm =) This is
+        Jezz!
+      </p>
     </header>
-    <div class = "analysis-module">
-         <section class = "playground">
-             <div class="board">
-                 <div class = "row8 container">
-                     <div class = "tile row-8 column-A"></div>
-                     <div class = "tile row-8 column-B"></div>
-                     <div class = "tile row-8 column-C"></div>
-                     <div class = "tile row-8 column-D"></div>
-                     <div class = "tile row-8 column-E"></div>
-                     <div class = "tile row-8 column-F"></div>
-                     <div class = "tile row-8 column-G"></div>
-                     <div class = "tile row-8 column-H"></div>
-                 </div>
-                 <div class = "row7 container">
-                     <div class = "tile row-7 column-A"></div>
-                     <div class = "tile row-7 column-B"></div>
-                     <div class = "tile row-7 column-C"></div>
-                     <div class = "tile row-7 column-D"></div>
-                     <div class = "tile row-7 column-E"></div>
-                     <div class = "tile row-7 column-F"></div>
-                     <div class = "tile row-7 column-G"></div>
-                     <div class = "tile row-7 column-H"></div>
-                 </div>
-                 <div class = "row6 container">
-                     <div class = "tile row-6 column-A"></div>
-                     <div class = "tile row-6 column-B"></div>
-                     <div class = "tile row-6 column-C"></div>
-                     <div class = "tile row-6 column-D"></div>
-                     <div class = "tile row-6 column-E"></div>
-                     <div class = "tile row-6 column-F"></div>
-                     <div class = "tile row-6 column-G"></div>
-                     <div class = "tile row-6 column-H"></div>
-                 </div>
-                 <div class = "row5 container">
-                     <div class = "tile row-5 column-A"></div>
-                     <div class = "tile row-5 column-B"></div>
-                     <div class = "tile row-5 column-C"></div>
-                     <div class = "tile row-5 column-D"></div>
-                     <div class = "tile row-5 column-E"></div>
-                     <div class = "tile row-5 column-F"></div>
-                     <div class = "tile row-5 column-G"></div>
-                     <div class = "tile row-5 column-H"></div>
-                 </div>
-                 <div class = "row4 container">
-                     <div class = "tile row-4 column-A"></div>
-                     <div class = "tile row-4 column-B"></div>
-                     <div class = "tile row-4 column-C"></div>
-                     <div class = "tile row-4 column-D"></div>
-                     <div class = "tile row-4 column-E"></div>
-                     <div class = "tile row-4 column-F"></div>
-                     <div class = "tile row-4 column-G"></div>
-                     <div class = "tile row-4 column-H"></div>
-                 </div> 
-                 <div class = "row3 container">
-                     <div class = "tile row-3 column-A"></div>
-                     <div class = "tile row-3 column-B"></div>
-                     <div class = "tile row-3 column-C"></div>
-                     <div class = "tile row-3 column-D"></div>
-                     <div class = "tile row-3 column-E"></div>
-                     <div class = "tile row-3 column-F"></div>
-                     <div class = "tile row-3 column-G"></div>
-                     <div class = "tile row-3 column-H"></div>
-                 </div> 
-                 <div class = "row2 container">
-                     <div class = "tile row-2 column-A"></div>
-                     <div class = "tile row-2 column-B"></div>
-                     <div class = "tile row-2 column-C"></div>
-                     <div class = "tile row-2 column-D"></div>
-                     <div class = "tile row-2 column-E"></div>
-                     <div class = "tile row-2 column-F"></div>
-                     <div class = "tile row-2 column-G"></div>
-                     <div class = "tile row-2 column-H"></div>
-                 </div>
-                 <div class = "row1 container">
-                     <div class = "tile row-1 column-A"></div>
-                     <div class = "tile row-1 column-B"></div>
-                     <div class = "tile row-1 column-C"></div>
-                     <div class = "tile row-1 column-D"></div>
-                     <div class = "tile row-1 column-E"></div>
-                     <div class = "tile row-1 column-F"></div>
-                     <div class = "tile row-1 column-G"></div>
-                     <div class = "tile row-1 column-H"></div>
-                 </div>
-             </div>
-         </section>
-         <section class="controls">
-             <div class="test">
-                 <button type="button" class="btn" id="reset">Reset</button>
-                 <button type="button" class="btn" id="test">Test</button>
+    <div class="analysis-module">
+      <section class="playground">
+        <div class="board">
+          <div class="row8 container">
+            <div class="tile row-8 column-A"></div>
+            <div class="tile row-8 column-B"></div>
+            <div class="tile row-8 column-C"></div>
+            <div class="tile row-8 column-D"></div>
+            <div class="tile row-8 column-E"></div>
+            <div class="tile row-8 column-F"></div>
+            <div class="tile row-8 column-G"></div>
+            <div class="tile row-8 column-H"></div>
+          </div>
+          <div class="row7 container">
+            <div class="tile row-7 column-A"></div>
+            <div class="tile row-7 column-B"></div>
+            <div class="tile row-7 column-C"></div>
+            <div class="tile row-7 column-D"></div>
+            <div class="tile row-7 column-E"></div>
+            <div class="tile row-7 column-F"></div>
+            <div class="tile row-7 column-G"></div>
+            <div class="tile row-7 column-H"></div>
+          </div>
+          <div class="row6 container">
+            <div class="tile row-6 column-A"></div>
+            <div class="tile row-6 column-B"></div>
+            <div class="tile row-6 column-C"></div>
+            <div class="tile row-6 column-D"></div>
+            <div class="tile row-6 column-E"></div>
+            <div class="tile row-6 column-F"></div>
+            <div class="tile row-6 column-G"></div>
+            <div class="tile row-6 column-H"></div>
+          </div>
+          <div class="row5 container">
+            <div class="tile row-5 column-A"></div>
+            <div class="tile row-5 column-B"></div>
+            <div class="tile row-5 column-C"></div>
+            <div class="tile row-5 column-D"></div>
+            <div class="tile row-5 column-E"></div>
+            <div class="tile row-5 column-F"></div>
+            <div class="tile row-5 column-G"></div>
+            <div class="tile row-5 column-H"></div>
+          </div>
+          <div class="row4 container">
+            <div class="tile row-4 column-A"></div>
+            <div class="tile row-4 column-B"></div>
+            <div class="tile row-4 column-C"></div>
+            <div class="tile row-4 column-D"></div>
+            <div class="tile row-4 column-E"></div>
+            <div class="tile row-4 column-F"></div>
+            <div class="tile row-4 column-G"></div>
+            <div class="tile row-4 column-H"></div>
+          </div>
+          <div class="row3 container">
+            <div class="tile row-3 column-A"></div>
+            <div class="tile row-3 column-B"></div>
+            <div class="tile row-3 column-C"></div>
+            <div class="tile row-3 column-D"></div>
+            <div class="tile row-3 column-E"></div>
+            <div class="tile row-3 column-F"></div>
+            <div class="tile row-3 column-G"></div>
+            <div class="tile row-3 column-H"></div>
+          </div>
+          <div class="row2 container">
+            <div class="tile row-2 column-A"></div>
+            <div class="tile row-2 column-B"></div>
+            <div class="tile row-2 column-C"></div>
+            <div class="tile row-2 column-D"></div>
+            <div class="tile row-2 column-E"></div>
+            <div class="tile row-2 column-F"></div>
+            <div class="tile row-2 column-G"></div>
+            <div class="tile row-2 column-H"></div>
+          </div>
+          <div class="row1 container">
+            <div class="tile row-1 column-A"></div>
+            <div class="tile row-1 column-B"></div>
+            <div class="tile row-1 column-C"></div>
+            <div class="tile row-1 column-D"></div>
+            <div class="tile row-1 column-E"></div>
+            <div class="tile row-1 column-F"></div>
+            <div class="tile row-1 column-G"></div>
+            <div class="tile row-1 column-H"></div>
+          </div>
+        </div>
+      </section>
+      <section class="controls">
+        <div class="test">
+          <button type="button" class="btn" id="reset">Reset</button>
+          <button type="button" class="btn" id="test">Test</button>
 
-                 <fieldset>
-                     <legend>WHITE</legend>           
-                         <label for="white-pawn-selector">
-                             <input type="checkbox" name="white-pawn" class = "selector white pawn" id="white-pawn-selector" value="white-pawn"> 
-                             PAWN
-                         </label>
-                         <label for="white-bishop-selector">
-                             <input type="checkbox" name="white-bishop" class = "selector white bishop" id="white-bishop-selector" value="white-bishop"> 
-                             BISHOP
-                         </label>
-                         <label for="white-knight-selector">
-                             <input type="checkbox" name="white-knight" class = "selector white knight" id="white-knight-selector" value="white-knight"> 
-                             KNIGHT
-                         </label>
-                         <label for="white-rook-selector">
-                             <input type="checkbox" name="white-rook" class = "selector white rook" id="white-rook-selector" value="white-rook"> 
-                             ROOK
-                         </label>
-                         <label for="white-queen-selector">
-                             <input type="checkbox" name="white-queen" class = "selector white queen" id="white-queen-selector" value="white-queen"> 
-                             QUEEN
-                         </label>
-                         <label for="white-king-selector">
-                             <input type="checkbox" name="white-king" class = "selector white king" id="white-king-selector" value="white-king"> 
-                             KING
-                         </label>          
-                 </fieldset>
-             
-                 <fieldset>
-                     <legend>BLACK</legend>           
-                         <label for="black-pawn-selector">
-                             <input type="checkbox" name="black-pawn" class = "selector black pawn" id="black-pawn-selector" value="black-pawn"> 
-                             PAWN
-                         </label>
-                         <label for="black-bishop-selector">
-                             <input type="checkbox" name="black-bishop" class = "selector black bishop" id="black-bishop-selector" value="black-bishop"> 
-                             BISHOP
-                         </label>
-                         <label for="black-knight-selector">
-                             <input type="checkbox" name="black-knight" class = "selector black knight" id="black-knight-selector" value="black-knight"> 
-                             KNIGHT
-                         </label>
-                         <label for="black-rook-selector">
-                             <input type="checkbox" name="black-rook" class = "selector black rook" id="black-rook-selector" value="black-rook"> 
-                             ROOK
-                         </label>
-                         <label for="black-queen-selector">
-                             <input type="checkbox" name="black-queen" class = "selector black queen" id="black-queen-selector" value="black-queen"> 
-                             QUEEN
-                         </label>
-                         <label
-                         for="black-king-selector">
-                         <input type="checkbox" name="black-king" class = "selector black king" id="black-king-selector" value="black-king"> 
-                         KING
-                         </label>
-                 </fieldset>
-             </div> 
-             <div class="analysis-settings">
-                <div class="setting-controls">
-                    <button type="button" id="add-analyzer" class="btn setting-controls">Add Analyzer</button>
-                </div>
+          <fieldset>
+            <legend>WHITE</legend>
+            <label for="white-pawn-selector">
+              <input
+                type="checkbox"
+                name="white-pawn"
+                class="selector white pawn"
+                id="white-pawn-selector"
+                value="white-pawn"
+              />
+              PAWN
+            </label>
+            <label for="white-bishop-selector">
+              <input
+                type="checkbox"
+                name="white-bishop"
+                class="selector white bishop"
+                id="white-bishop-selector"
+                value="white-bishop"
+              />
+              BISHOP
+            </label>
+            <label for="white-knight-selector">
+              <input
+                type="checkbox"
+                name="white-knight"
+                class="selector white knight"
+                id="white-knight-selector"
+                value="white-knight"
+              />
+              KNIGHT
+            </label>
+            <label for="white-rook-selector">
+              <input
+                type="checkbox"
+                name="white-rook"
+                class="selector white rook"
+                id="white-rook-selector"
+                value="white-rook"
+              />
+              ROOK
+            </label>
+            <label for="white-queen-selector">
+              <input
+                type="checkbox"
+                name="white-queen"
+                class="selector white queen"
+                id="white-queen-selector"
+                value="white-queen"
+              />
+              QUEEN
+            </label>
+            <label for="white-king-selector">
+              <input
+                type="checkbox"
+                name="white-king"
+                class="selector white king"
+                id="white-king-selector"
+                value="white-king"
+              />
+              KING
+            </label>
+          </fieldset>
 
-             </div>
-        </section>
+          <fieldset>
+            <legend>BLACK</legend>
+            <label for="black-pawn-selector">
+              <input
+                type="checkbox"
+                name="black-pawn"
+                class="selector black pawn"
+                id="black-pawn-selector"
+                value="black-pawn"
+              />
+              PAWN
+            </label>
+            <label for="black-bishop-selector">
+              <input
+                type="checkbox"
+                name="black-bishop"
+                class="selector black bishop"
+                id="black-bishop-selector"
+                value="black-bishop"
+              />
+              BISHOP
+            </label>
+            <label for="black-knight-selector">
+              <input
+                type="checkbox"
+                name="black-knight"
+                class="selector black knight"
+                id="black-knight-selector"
+                value="black-knight"
+              />
+              KNIGHT
+            </label>
+            <label for="black-rook-selector">
+              <input
+                type="checkbox"
+                name="black-rook"
+                class="selector black rook"
+                id="black-rook-selector"
+                value="black-rook"
+              />
+              ROOK
+            </label>
+            <label for="black-queen-selector">
+              <input
+                type="checkbox"
+                name="black-queen"
+                class="selector black queen"
+                id="black-queen-selector"
+                value="black-queen"
+              />
+              QUEEN
+            </label>
+            <label for="black-king-selector">
+              <input
+                type="checkbox"
+                name="black-king"
+                class="selector black king"
+                id="black-king-selector"
+                value="black-king"
+              />
+              KING
+            </label>
+          </fieldset>
+        </div>
+        <div class="analysis-settings">
+          <div class="setting-controls">
+            <button
+              type="button"
+              id="add-analyzer"
+              class="btn setting-controls"
+            >
+              Add Analyzer
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
+  </div>
 </body>
 <footer></footer>
