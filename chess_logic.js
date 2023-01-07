@@ -284,6 +284,9 @@ function updateAnalysisDisplay() {
                 }   
             }
         }
+        if(currentAnalysis[field]['black']['knight']){
+            targetField.innerHTML = currentAnalysis[field]['black']['knight']
+        }
         addStyle(targetField, style)
     }
 }
@@ -493,7 +496,25 @@ function getUltimateMoves(piece) {
     return moveList
 }
 
+function calculateKnightPaths(fieldList, allegiance, counter)  {
+    
+    var moveOptions = []
+    for (const field of fieldList)  {
+        moveOptions = _.union(moveOptions, createUnifiedMoveList(new Piece(allegiance + '-knight', field).getMoveList()))
+    }
+    
+    var exitCheck = 0
+    for (const option of moveOptions) {
+        if(!currentAnalysis[option][allegiance]['knight']){
+            currentAnalysis[option][allegiance]['knight'] = counter
+            exitCheck++
+            updateAnalysisDisplay()
+        }     
+    }
+    if(exitCheck == 0) return 
+    counter++
+   
+        calculateKnightPaths(moveOptions ,allegiance,counter )
 
-
-
+}
 
